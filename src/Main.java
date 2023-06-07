@@ -19,16 +19,26 @@ class Solution {
         int answer = 0;
 
         Map<Integer,Integer> mandarinNum = new HashMap<Integer,Integer>();
+        putHashMap(tangerine, mandarinNum);
+        Map<Integer, Integer> sorted = getSortedHashMap(mandarinNum);
+        int kCount=0;
+        answer = getSliceAndGetCateNum(k, answer, sorted, kCount);
+        return answer;
+    }
 
-        for(int sizeNo : tangerine){
-            if(mandarinNum.containsKey(sizeNo)){
-                mandarinNum.put(sizeNo,mandarinNum.get(sizeNo)+1);
+    private static int getSliceAndGetCateNum(int k, int answer, Map<Integer, Integer> sorted, int kCount) {
+        for (Map.Entry<Integer, Integer> entry : sorted.entrySet()) {
+            answer++;
+            for(int i = 0; i < entry.getValue(); i++){
+                kCount++;
+                if(k == kCount) break;
             }
-            else{
-                mandarinNum.put(sizeNo,1);
-            }
+            if(k == kCount) break;
         }
+        return answer;
+    }
 
+    private static Map<Integer, Integer> getSortedHashMap(Map<Integer, Integer> mandarinNum) {
         /**
          * 1.mandarinNum.entrySet().stream(): Map에는 entrySet() 메서드가 있어서 Map의 각 요소를 Entry 타입의 Set으로 변환합니다.
          * 여기서 Entry는 Map에 저장된 키-값 쌍을 나타내는 타입입니다. 이 Set을 stream() 메서드로 스트림으로 변환합니다.
@@ -55,15 +65,17 @@ class Solution {
                 .collect(
                         Collectors.toMap(Map.Entry::getKey,Map.Entry::getValue,(e1, e2) -> e2,LinkedHashMap::new)
                 );
+        return sorted;
+    }
 
-        int kCount=0;
-        for (Map.Entry<Integer, Integer> entry : sorted.entrySet()) {
-            answer++;
-            for(int i = 0; i < entry.getValue(); i++){
-                kCount++;
-                if(k == kCount) return answer;
+    private static void putHashMap(int[] tangerine, Map<Integer, Integer> mandarinNum) {
+        for(int sizeNo : tangerine){
+            if(mandarinNum.containsKey(sizeNo)){
+                mandarinNum.put(sizeNo, mandarinNum.get(sizeNo)+1);
+            }
+            else{
+                mandarinNum.put(sizeNo,1);
             }
         }
-        return answer;
     }
 }
