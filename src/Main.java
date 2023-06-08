@@ -1,16 +1,30 @@
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
+        List<Integer> list = Arrays.asList(7,9,1,1,4);
+        Set<Integer> resultSet = new HashSet<>();
+        for (int r = 1; r <= list.size(); r++) {
+            combine(list, resultSet, new ArrayList<>(), 0, r);
+        }
+        System.out.println(resultSet);  // Resulting set of sums
+    }
 
-        Solution sol = new Solution();
-        int[] tangerine = {1,3,2,5,4,5,2,3};
-        int answer=sol.solution(6,tangerine);
-        System.out.println(answer);
+    static void combine(List<Integer> list, Set<Integer> resultSet, List<Integer> tempList, int start, int r) {
+        if (tempList.size() == r) {
+            int sum = tempList.stream().mapToInt(Integer::intValue).sum();
+            resultSet.add(sum);
+            return;
+        }
+        for (int i = start; i < list.size(); i++) {
+            tempList.add(list.get(i));
+            if(i+1 < list.size()) tempList.add(list.get(i+1));  // add next element
+            else  tempList.add(list.get(0));
+            combine(list, resultSet, tempList, i + r, r);  // Skip the next one as it's already considered
+            tempList.remove(tempList.size() - 1);  // Backtrack
+            if(i+1 < list.size()) tempList.remove(tempList.size() - 1);  // Backtrack
+        }
     }
 }
 
