@@ -6,26 +6,29 @@ public class Main {
         List<Integer> list = Arrays.asList(7,9,1,1,4);
         Set<Integer> resultSet = new HashSet<>();
         for (int r = 1; r <= list.size(); r++) {
-            combine(list, resultSet, new ArrayList<>(), 0, r);
+            combineConsecutive(list, resultSet, new ArrayList<>(), 0, r);
         }
-        System.out.println(resultSet);  // Resulting set of sums
+        System.out.println(resultSet.size());  // Resulting set of sums
     }
 
-    static void combine(List<Integer> list, Set<Integer> resultSet, List<Integer> tempList, int start, int r) {
+    static void combineConsecutive(List<Integer> list, Set<Integer> resultSet, List<Integer> tempList, int start, int r) {
         if (tempList.size() == r) {
             int sum = tempList.stream().mapToInt(Integer::intValue).sum();
             resultSet.add(sum);
             return;
         }
-        for (int i = start; i < list.size(); i++) {
+        for (int i = start; i <= list.size() - r + tempList.size(); i++) {
             tempList.add(list.get(i));
-            if(i+1 < list.size()) tempList.add(list.get(i+1));  // add next element
-            else  tempList.add(list.get(0));
-            combine(list, resultSet, tempList, i + r, r);  // Skip the next one as it's already considered
-            tempList.remove(tempList.size() - 1);  // Backtrack
-            if(i+1 < list.size()) tempList.remove(tempList.size() - 1);  // Backtrack
+            if(r>1 && tempList.size() == r) { // if tempList size reaches 'r', do not go deeper
+                combineConsecutive(list, resultSet, tempList, i + 1, r);
+                tempList.remove(tempList.size() - 1);
+                break;
+            }
+            combineConsecutive(list, resultSet, tempList, i + 1, r); // Here we only move to the next element 'i + 1'
+            tempList.remove(tempList.size() - 1);
         }
     }
+
 }
 
 class Solution {
