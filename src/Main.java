@@ -14,26 +14,19 @@ class Solution {
     public int solution(int[] elements) {
         Set<Integer> resultSet = new HashSet<>();
         for (int r = 1; r <= elements.length; r++) {
-            combineConsecutive(elements, resultSet, new ArrayList<>(), 0, r);
+            combineConsecutive(elements, resultSet, new ArrayList<>(), r);
         }
         return resultSet.size();
     }
 
-    static void combineConsecutive(int[] elements, Set<Integer> resultSet, List<Integer> tempList, int start, int r) {
-        if (tempList.size() == r) {
-            int sum = tempList.stream().mapToInt(Integer::intValue).sum();
-            resultSet.add(sum);
-            return;
-        }
-        for (int i = start; i <= elements.length - r + tempList.size(); i++) {
-            tempList.add(elements[i]);
-            if(r>1 && tempList.size() == r) { // if tempList size reaches 'r', do not go deeper
-                combineConsecutive(elements, resultSet, tempList, i + 1, r);
-                tempList.remove(tempList.size() - 1);
-                break;
+    static void combineConsecutive(int[] elements, Set<Integer> resultSet, List<Integer> tempList, int r) {
+
+        for(int i=0; i<elements.length; i++){
+            for(int j=0; j<r; j++){
+                tempList.add(elements[(i+j)%elements.length]);
             }
-            combineConsecutive(elements, resultSet, tempList, i + 1, r); // Here we only move to the next element 'i + 1'
-            tempList.remove(tempList.size() - 1);
+            resultSet.add(tempList.stream().mapToInt(Integer::intValue).sum());
+            tempList.clear();
         }
     }
 }
