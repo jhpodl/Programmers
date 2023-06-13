@@ -15,17 +15,20 @@ public class Main {
 class Solution {
     public int[] solution(int n, long left, long right) {
         List<Integer> linear = new ArrayList<Integer>();
-        for(int i=1; i<=n ; i++){
-            for(int j=1; j<=i ; j++){
-                linear.add(i);
-            }
-            for(int j=i+1; j<=n ; j++){
-                linear.add(j);
-            }
-        }
-        Integer[] subInteger = linear.subList((int)left,(int)right+1).toArray(new Integer[0]);
-        int[] answer = Arrays.stream(subInteger).mapToInt(Integer::intValue).toArray();
 
+        int diff = (int)Math.abs(left-right);
+
+        for(int i=0; i<=diff ; i++){
+            int next = (int) left +i;
+            int row = next/n;
+            int col = next%n;
+
+            if(col <=row)
+                linear.add(row+1);
+            else
+                linear.add((row+1)+(col-row));
+        }
+        int[] answer = linear.stream().mapToInt(Integer::intValue).toArray();
         return answer;
     }
 }
